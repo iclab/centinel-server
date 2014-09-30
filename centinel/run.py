@@ -4,10 +4,10 @@ import centinel.views
 import config
 import os
 
+app = centinel.app
 
 if __name__ == "__main__":
     db = centinel.db
-    app = centinel.app
 
     sql_dir = os.path.dirname(config.sqlite_db)
     if not os.path.exists(sql_dir):
