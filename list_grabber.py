@@ -19,7 +19,6 @@ import argparse
 import os
 import re
 import requests
-import string
 
 
 from os import path
@@ -50,7 +49,7 @@ def parse_args():
     args = parser.parse_args()
 
     if not os.path.exists(args.output):
-        parser.error("The output directory \"%s\" does not exist!" %(args.output))
+        parser.error("The output directory \"%s\" does not exist!" % args.output)
 
     if args.user is None and args.digest is False:
         parser.error('Digest authentication has been enabled but no username and password '
@@ -64,13 +63,12 @@ if __name__ == "__main__":
     url = args.url
     if args.user is not None:
         user, password = args.user.split(':')
-        if args.digest == True:
-            auth = HTTPDigestAuth(user,password)
+        if args.digest:
+            auth = HTTPDigestAuth(user, password)
         else:
             auth = (user, password)
     else:
         auth = None
-
 
     directory = os.path.join(args.output, "global")
     req = requests.get(url, auth=auth)
@@ -79,17 +77,17 @@ if __name__ == "__main__":
     csvs = re.findall('href=\"([^\'\.\"]+\.csv)\"', req.text)
 
     if not os.path.exists(directory):
-        print "Creating \"global\" directory at %s." %(directory)
+        print "Creating \"global\" directory at %s." % directory
         os.makedirs(directory)
 
     for csvfile in csvs:
         path = urljoin(url, csvfile)
-        print "Downloading  list \"%s\"." %(path)
+        print "Downloading  list \"%s\"." % path
         try:
             req = requests.get(path, auth=auth)
             req.raise_for_status()
         except Exception as exp:
-            print "Error downloading file \"%s\": %s" %(path, exp)
+            print "Error downloading file \"%s\": %s" % (path, exp)
             continue
 
         path = os.path.join(args.output, "global", csvfile)
@@ -99,7 +97,7 @@ if __name__ == "__main__":
         if len(base) == 2:
             directory = os.path.join(args.output, base)
             if not os.path.exists(directory):
-                print "Creating directory for country %s at %s." %(base, directory)
+                print "Creating directory for country %s at %s." % (base, directory)
                 os.makedirs(directory)
             path = os.path.join(directory, "country_list.csv")
 

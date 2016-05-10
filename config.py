@@ -17,6 +17,7 @@ experiments_dir = os.path.join(centinel_home, 'experiments')
 inputs_dir = os.path.join(centinel_home, 'inputs')
 static_files_allowed = ['economistDemocracyIndex.pdf', 'consent.js']
 
+
 # details for how to access the database
 def load_uri_from_file(filename):
     with open(filename, 'r') as filep:
@@ -24,7 +25,7 @@ def load_uri_from_file(filename):
     return uri
 
 # Setup the database to connect to
-database_uri_file = "/opt/centinel-server/cent.pgpass"
+database_uri_file = os.path.join(centinel_home, "cent.pgpass")
 if not production:
     DATABASE_URI = "postgresql://postgres:postgres@localhost/centinel"
 else:

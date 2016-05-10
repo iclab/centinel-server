@@ -7,7 +7,8 @@ The Server used to control Centinel nodes in the wild.
 Get the maxind geolocation database by running 
 
     $ mkdir ~/.centinel
-    $ curl http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz -o ~/.centinel/maxmind.db
+    $ curl http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz | gunzip -c > ~/.centinel/maxmind.mmdb
+    $ curl http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz | gunzip -c > ~/.centinel/asn-db.dat
 
 Download and install PostgreSQL [here](http://www.postgresql.org/download/).
 Create user root:
@@ -20,15 +21,14 @@ Change the password for the user postgres since Centinel-server connects to PSQL
     $ postgres=> alter user postgres password 'postgres';
 
 ### Install psycopg2
-pyscopg2 has a dependency on postgresql-server-dev. So install postgresql-server-dev
 
-	$ pip install -U postgresql-server-dev-X.Y
+	$ sudo apt-get install libpq-dev python-dev
 	$ pip install -U psycopg2
 	
 ### Install GeoIP
 First install library libgeoip-dev
 
-	$ apt-get install libgeoip-dev
+	$ sudo apt-get install libgeoip-dev
 	$ pip install GeoIP
 	
 

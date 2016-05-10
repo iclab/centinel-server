@@ -1,3 +1,5 @@
+import os
+import sys
 import argparse
 import centinel
 import centinel.models
@@ -6,7 +8,7 @@ import config
 import logging
 from logging.handlers import RotatingFileHandler
 
-import sys
+
 if (2, 7, 9) > sys.version_info:
     print ("WARNING: Python is older than 2.7.9, "
            "using older SSL version. This is "
@@ -17,8 +19,6 @@ if (2, 7, 9) > sys.version_info:
 else:
     import ssl
     py_279 = True
-
-import os
 
 
 def parse_args():

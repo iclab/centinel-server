@@ -38,8 +38,8 @@ except (geoip2.database.maxminddb.InvalidDatabaseError, IOError):
 
 try:
     logging.info("Loading AS info database...")
-    as_lookup = GeoIP.open("/opt/centinel-server/asn-db.dat",
-                           GeoIP.GEOIP_STANDARD)
+    asn_db_path = os.path.join(config.centinel_home, "asn-db.dat")
+    as_lookup = GeoIP.open(asn_db_path, GeoIP.GEOIP_STANDARD)
     logging.info("Done loading AS info database.")
 except Exception as exp:
     logging.warning(("Error loading ASN lookup information. You need a copy "
