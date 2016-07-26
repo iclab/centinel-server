@@ -1,6 +1,6 @@
 import flask
-from flask.ext.httpauth import HTTPBasicAuth
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_httpauth import HTTPBasicAuth
+from flask_sqlalchemy import SQLAlchemy
 # local imports (from centinel-server package)
 import config
 
