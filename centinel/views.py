@@ -102,9 +102,13 @@ def update_client_info(username, ip, country=None):
     if client is None:
         # this should never happen
         return
-    # aggregate the ip to /24
-    client.last_ip = ".".join(ip.split(".")[:3]) + ".0/24"
-    client.last_seen = datetime.now()
+
+    # if there is no IP specified, don't update last_seen and last_ip
+    if ip is not None:
+        # aggregate the ip to /24
+        client.last_ip = ".".join(ip.split(".")[:3]) + ".0/24"
+        client.last_seen = datetime.now()
+
     # if the client explicitely sets their country,
     # update the value based on that (used by VPN).
     if country is not None:
@@ -310,7 +314,7 @@ def set_country(country):
 
     try:
         update_client_info(flask.request.authorization.username,
-                           flask.request.remote_addr, country)
+                           ip=None, country=country)
     except Exception as exp:
         logging.error("Error setting country"
                       " %s: %s" % (country, exp))
@@ -340,7 +344,7 @@ def set_ip(ip_address):
 @auth.login_required
 def get_experiments(name=None):
     update_client_info(flask.request.authorization.username,
-                       flask.request.remote_addr)
+                       ip=flask.request.remote_addr)
     return get_user_specific_content(config.experiments_dir, filename=name,
                                      json_var="experiments")
 
@@ -350,7 +354,7 @@ def get_experiments(name=None):
 @auth.login_required
 def get_inputs(name=None):
     update_client_info(flask.request.authorization.username,
-                       flask.request.remote_addr)
+                       ip=flask.request.remote_addr)
     return get_user_specific_content(config.inputs_dir, filename=name,
                                      json_var="inputs")
 
