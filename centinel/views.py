@@ -87,7 +87,7 @@ def generate_typeable_handle(length=8):
                     string.ascii_lowercase) for _ in range(length)])
 
 
-def update_client_info(username, ip, country=None):
+def update_client_info(username, ip, country=None, src=None):
     """Update client's information upon contact.
     This information includes their IP address,
     time when last seen, and country.
@@ -98,9 +98,24 @@ def update_client_info(username, ip, country=None):
     ip-         IP address of the client
 
     """
+
     client = Client.query.filter_by(username=username).first()
     if client is None:
         # this should never happen
+        return
+
+    # don't update VPN IP when downloading experiments,
+    # also don't update VPN last seen time except when uploading results
+    if client.is_vpn:
+        if src == "results":
+            client.last_seen = datetime.now()
+        elif src in ["set_ip", "set_country"]:
+            if ip is not None:
+                # aggregate the ip to /24
+                client.last_ip = ".".join(ip.split(".")[:3]) + ".0/24"
+            if country is not None:
+                client.country = country
+            client.last_seen = datetime.now()
         return
 
     # if there is no IP specified, don't update last_seen and last_ip
@@ -154,7 +169,7 @@ def get_recommended_version():
 @auth.login_required
 def submit_result():
     update_client_info(flask.request.authorization.username,
-                       flask.request.remote_addr)
+                       flask.request.remote_addr, src="results")
     # abort if there is no result file
     if not flask.request.files:
         flask.abort(400)
@@ -314,7 +329,7 @@ def set_country(country):
 
     try:
         update_client_info(flask.request.authorization.username,
-                           ip=None, country=country)
+                           ip=None, country=country, src="set_country")
     except Exception as exp:
         logging.error("Error setting country"
                       " %s: %s" % (country, exp))
@@ -331,7 +346,7 @@ def set_ip(ip_address):
 
     try:
         update_client_info(flask.request.authorization.username,
-                           ip=ip_address)
+                           ip=ip_address, src="set_ip")
     except Exception as exp:
         logging.error("Error setting IP address"
                       " %s: %s" % (ip_address, exp))
@@ -344,7 +359,7 @@ def set_ip(ip_address):
 @auth.login_required
 def get_experiments(name=None):
     update_client_info(flask.request.authorization.username,
-                       ip=flask.request.remote_addr)
+                       ip=flask.request.remote_addr, src="get_experiments")
     return get_user_specific_content(config.experiments_dir, filename=name,
                                      json_var="experiments")
 
@@ -354,7 +369,7 @@ def get_experiments(name=None):
 @auth.login_required
 def get_inputs(name=None):
     update_client_info(flask.request.authorization.username,
-                       ip=flask.request.remote_addr)
+                       ip=flask.request.remote_addr, src="get_input_files")
     return get_user_specific_content(config.inputs_dir, filename=name,
                                      json_var="inputs")
 
