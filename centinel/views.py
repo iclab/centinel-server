@@ -109,10 +109,11 @@ def update_client_info(username, ip, country=None, src=None):
     if client.is_vpn:
         if src == "results":
             client.last_seen = datetime.now()
-        elif src in ["set_ip", "set_country"]:
+        elif src == "set_ip":
             if ip is not None:
                 # aggregate the ip to /24
                 client.last_ip = ".".join(ip.split(".")[:3]) + ".0/24"
+        elif src == "set_country":
             if country is not None:
                 client.country = country
         db.session.commit()
