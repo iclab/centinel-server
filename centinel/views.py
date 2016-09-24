@@ -115,7 +115,6 @@ def update_client_info(username, ip, country=None, src=None):
                 client.last_ip = ".".join(ip.split(".")[:3]) + ".0/24"
             if country is not None:
                 client.country = country
-            client.last_seen = datetime.now()
         db.session.commit()
         return
 
@@ -199,7 +198,7 @@ def submit_result():
 @auth.login_required
 def get_results():
     update_client_info(flask.request.authorization.username,
-                       flask.request.remote_addr)
+                       flask.request.remote_addr, src="get_results")
     results = {}
 
     # TODO: cache the list of results?
