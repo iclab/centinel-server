@@ -116,6 +116,7 @@ def update_client_info(username, ip, country=None, src=None):
             if country is not None:
                 client.country = country
             client.last_seen = datetime.now()
+        db.session.commit()
         return
 
     # if there is no IP specified, don't update last_seen and last_ip

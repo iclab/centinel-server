@@ -1,6 +1,6 @@
 import flask
 from flask import Flask
-from flask.ext.testing import TestCase
+from flask_testing import TestCase
 
 from server import app, db, Client
 import config
