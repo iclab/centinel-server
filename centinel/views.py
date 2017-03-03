@@ -28,7 +28,7 @@ db = centinel.db
 auth = centinel.auth
 
 try:
-    reader = geoip2.database.Reader(config.maxmind_db)
+    reader = geoip2.database.Reader(config.geoip_db)
 except (geoip2.database.maxminddb.InvalidDatabaseError, IOError):
     logging.warning("You appear to have an error in your geolocation "
                     "database. Your database is either corrupt or does not "
@@ -38,8 +38,7 @@ except (geoip2.database.maxminddb.InvalidDatabaseError, IOError):
 
 try:
     logging.info("Loading AS info database...")
-    asn_db_path = os.path.join(config.centinel_home, "asn-db.dat")
-    as_lookup = GeoIP.open(asn_db_path, GeoIP.GEOIP_STANDARD)
+    as_lookup = GeoIP.open(config.asn_db, GeoIP.GEOIP_STANDARD)
     logging.info("Done loading AS info database.")
 except Exception as exp:
     logging.warning(("Error loading ASN lookup information. You need a copy "

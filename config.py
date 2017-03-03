@@ -31,11 +31,11 @@ if not production:
 else:
     DATABASE_URI = load_uri_from_file(database_uri_file)
 
-maxmind_db = os.path.join(centinel_home, 'maxmind.mmdb')
-
-# AS information lookup
-net_to_asn_file   = os.path.join(centinel_home, 'data-raw-table')
-asn_to_owner_file = os.path.join(centinel_home, 'data-used-autnums')
+# GeoIP and AS databases from http://dev.maxmind.com/geoip/legacy/geolite/
+# use https://dev.maxmind.com/geoip/geoipupdate/#For_Free_GeoLite2_and_GeoLite_Legacy_Databases
+# to update databases
+geoip_db = '/usr/local/share/GeoIP/GeoLite2-Country.mmdb'
+asn_db = '/usr/local/share/GeoIP/GeoLiteASNum.dat'
 
 # consent form
 prefetch_freedomhouse = False
